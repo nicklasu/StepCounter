@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //Get the SensorManager and attach it a name "sensorManager"
     private SensorManager sensorManager;
     private Sensor stepSensor;
-    private boolean running = false;
     private float totalSteps = 0f;
     private TextView stepsTaken;
 
@@ -32,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume(){
         super.onResume();
-        running = true;
         if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) == null) {
             Log.d("STEPCOUNTERDEBUG", "No sensor detected!");
         } else {
@@ -45,10 +43,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void onSensorChanged(SensorEvent event) {
-        if(running){
+
             totalSteps = event.values[0];
-            stepsTaken.setText(String.valueOf(totalSteps));
+            String currentSteps = String.valueOf(totalSteps);
+            stepsTaken.setText(currentSteps);
             Log.d("STEPCOUNTERDEBUG","Steps go up!");
-        }
+
     }
 }
