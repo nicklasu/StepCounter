@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -17,13 +18,18 @@ import android.util.Log;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
+    public static final String STEP_COUNT_PREFERENCES = "StepCountPreferences";
+    public static final String dailyStepsPref = "dailyStepsKey";
+    SharedPreferences stepCountPreferences;
+
     //Get the SensorManager and attach it a name "sensorManager"
     private SensorManager sensorManager;
     private Sensor stepSensor;
 
-    private float totalSteps = 0f;
+    private float totalSteps;
+    private float savedTotalSteps;
 
-    private TextView stepsTaken;
+    private TextView tv_stepsTaken;
 
 
     //For backwards compatibility to android version 8.0
@@ -34,6 +40,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        stepCountPreferences = getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
+        savedTotalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
+
+        tv_stepsTaken = findViewById(R.id.stepsTaken);
+
+        tv_stepsTaken.setText(String.valueOf(Math.round(totalSteps)));
+
+        Log.d("STEPCOUNTERDEBUG", "Load float!");
+
         //Check for permission for step counter
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
             //ask for permission
@@ -42,10 +57,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //Initialize sensorManager so it can getDefaultSensor later
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-
-
-        stepsTaken = findViewById(R.id.stepsTaken);
-
 
     }
 
@@ -63,6 +74,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else {
             sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI);
         }
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        SharedPreferences.Editor editor = stepCountPreferences.edit();
+
+        editor.putFloat("dailyStepsKey", totalSteps + savedTotalSteps);
+        editor.commit();
+        Log.d("STEPCOUNTERDEBUG","put float to dailyStepsKey");
 
     }
     //Has to be called, else SensorEventListener (implementation at the beginning) wouldn't work
@@ -77,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             totalSteps = event.values[0];
 
             //Put the values to int from float and round them
-            int totalStepsInt = Math.round(totalSteps);
-            stepsTaken.setText(String.valueOf(totalStepsInt));
+            tv_stepsTaken.setText(String.valueOf(Math.round(totalSteps + savedTotalSteps)));
+
             Log.d("STEPCOUNTERDEBUG","Steps go up!");
 
     }
