@@ -6,12 +6,14 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView_stepsTaken;
 
     private StorageComponent storageSteps;
+
+
+    //Probably temp button
+    Button switchToSettings;
+
 
     //Required for backwards compatibility to API 26
     @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -62,7 +69,16 @@ public class MainActivity extends AppCompatActivity {
 
         //Fresh data for textView
         textView_stepsTaken.setText(String.valueOf(Math.round(storageSteps.loadTotalSteps())));
+
+        //Button for switching to treats
+        switchToSettings = findViewById(R.id.switchToTreatActivity);
+        switchToSettings.setOnClickListener(view -> switchSettingsActivity());
     }
+    private void switchSettingsActivity() {
+        Intent switchToSettings = new Intent(this, SettingsActivity.class);
+        startActivity(switchToSettings);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -73,5 +89,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         storageSteps.saveTotalSteps(stepCounter.saveSteps());
+        stepCounter.countSteps();
     }
+
+
 }
