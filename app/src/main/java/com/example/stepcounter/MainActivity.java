@@ -6,29 +6,41 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity {
+    public static final String STEP_COUNT_PREFERENCES = "StepCountPreferences";
+
+    private float savedTotalSteps;
+
+    SharedPreferences stepCountPreferences;
+
     //Get the SensorManager and attach it a name "sensorManager"
     private SensorManager sensorManager;
     private Sensor stepSensor;
 
-    private float totalSteps = 0f;
-
-    private TextView stepsTaken;
+    private StepCounterComponent stepCounter;
 
 
-    //For backwards compatibility to android version 8.0
+    private TextView textView_stepsTaken;
+
+    private StorageComponent storageSteps;
+
+
+    //Probably temp button
+    Button switchToSettings;
+
+
+    //Required for backwards compatibility to API 26
     @RequiresApi(api = Build.VERSION_CODES.Q)
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,46 +52,45 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
         }
 
-        //Initialize sensorManager so it can getDefaultSensor later
+        //FindView
+        textView_stepsTaken = findViewById(R.id.stepsTaken);
+
+        //Load data
+        stepCountPreferences = getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
+        savedTotalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
+
+        //Sensor initializations
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-
-
-        stepsTaken = findViewById(R.id.stepsTaken);
-
-
-    }
-
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-
-        //Uses sensorManager to get TYPE_STEP_COUNTER, which uses accelerometer to calculate steps
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
-        //Print debug log if sensor isn't detected. Else start registering steps
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) == null) {
-            Log.d("STEPCOUNTERDEBUG", "No sensor detected!");
-        } else {
-            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI);
-        }
+        //Class initializations
+        storageSteps = new StorageComponent(stepCountPreferences, savedTotalSteps);
+        stepCounter = new StepCounterComponent(sensorManager, stepSensor, storageSteps.loadTotalSteps(), textView_stepsTaken);
 
+        //Fresh data for textView
+        textView_stepsTaken.setText(String.valueOf(Math.round(storageSteps.loadTotalSteps())));
+
+        //Button for switching to treats
+        switchToSettings = findViewById(R.id.switchToTreatActivity);
+        switchToSettings.setOnClickListener(view -> switchSettingsActivity());
     }
-    //Has to be called, else SensorEventListener (implementation at the beginning) wouldn't work
-    public void onAccuracyChanged (Sensor sensor, int accuracy){
-
+    private void switchSettingsActivity() {
+        Intent switchToSettings = new Intent(this, SettingsActivity.class);
+        startActivity(switchToSettings);
     }
 
-    public void onSensorChanged(SensorEvent event) {
-
-            //event.values has something to do with how accelerometer works.
-            //It is just how type_step_counter counts steps, using accelerometer.
-            totalSteps = event.values[0];
-
-            //Put the values to int from float and round them
-            int totalStepsInt = Math.round(totalSteps);
-            stepsTaken.setText(String.valueOf(totalStepsInt));
-            Log.d("STEPCOUNTERDEBUG","Steps go up!");
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        stepCounter.countSteps();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        storageSteps.saveTotalSteps(stepCounter.saveSteps());
+        stepCounter.countSteps();
+    }
+
+
 }
