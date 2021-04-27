@@ -15,11 +15,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import java.time.LocalDate;
+
 
 public class MainActivity extends AppCompatActivity {
     public static final String STEP_COUNT_PREFERENCES = "StepCountPreferences";
 
-    private float savedTotalSteps;
+    private float totalSteps;
 
     SharedPreferences stepCountPreferences;
 
@@ -29,13 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
     private StepCounterComponent stepCounter;
 
-
+    //TextViews
     private TextView textView_stepsTaken;
+    private TextView textView_caloriesBurned;
 
-    private StorageComponent storageSteps;
-
-
-    //Probably temp button
+    //Button for switching to settings
     Button switchToSettings;
 
 
@@ -54,26 +54,25 @@ public class MainActivity extends AppCompatActivity {
 
         //FindView
         textView_stepsTaken = findViewById(R.id.stepsTaken);
+        textView_caloriesBurned = findViewById(R.id.caloriesBurned);
 
         //Load data
         stepCountPreferences = getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
-        savedTotalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
+        totalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
 
         //Sensor initializations
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         //Class initializations
-        storageSteps = new StorageComponent(stepCountPreferences, savedTotalSteps);
-        stepCounter = new StepCounterComponent(sensorManager, stepSensor, storageSteps.loadTotalSteps(), textView_stepsTaken);
-
-        //Fresh data for textView
-        textView_stepsTaken.setText(String.valueOf(Math.round(storageSteps.loadTotalSteps())));
+        stepCounter = new StepCounterComponent(sensorManager, stepSensor, textView_stepsTaken, textView_caloriesBurned, stepCountPreferences);
 
         //Button for switching to treats
         switchToSettings = findViewById(R.id.switchToTreatActivity);
         switchToSettings.setOnClickListener(view -> switchSettingsActivity());
+        stepCounter.countSteps();
     }
+
     private void switchSettingsActivity() {
         Intent switchToSettings = new Intent(this, SettingsActivity.class);
         startActivity(switchToSettings);
@@ -82,15 +81,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        stepCounter.countSteps();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        storageSteps.saveTotalSteps(stepCounter.saveSteps());
-        stepCounter.countSteps();
     }
-
 
 }
