@@ -16,10 +16,9 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import java.time.LocalDate;
-
 
 public class MainActivity extends AppCompatActivity {
+
     public static final String STEP_COUNT_PREFERENCES = "StepCountPreferences";
 
     private float totalSteps;
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView_stepsTaken;
     private TextView textView_caloriesBurned;
     private TextView textView_distance;
+
     //Progress bar
     private ProgressBar progressBar_caloriesGoal;
     //Button for switching to settings
