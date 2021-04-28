@@ -6,26 +6,35 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
+
+import java.util.Locale;
 
 public class StepCounterComponent extends MainActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor stepSensor;
     private float freshSteps;
-    private TextView tv_stepsTaken;
 
+    private TextView tv_stepsTaken;
     private TextView tv_burnedCalories;
+    private TextView tv_distance;
+
+
+    private ProgressBar pb_caloriesGoal;
 
     SharedPreferences stepCountPreferences;
 
-    public StepCounterComponent(SensorManager sensorManager, Sensor stepSensor, TextView tv_stepsTaken, TextView tv_burnedCalories, SharedPreferences sharedPreferences) {
+    public StepCounterComponent(SensorManager sensorManager, Sensor stepSensor, TextView tv_stepsTaken, TextView tv_burnedCalories, TextView tv_distance, ProgressBar pb_caloriesGoal, SharedPreferences sharedPreferences) {
         this.sensorManager = sensorManager;
         this.stepSensor = stepSensor;
         this.tv_stepsTaken = tv_stepsTaken;
         this.tv_burnedCalories = tv_burnedCalories;
+        this.tv_distance = tv_distance;
+        this.pb_caloriesGoal = pb_caloriesGoal;
         this.stepCountPreferences = sharedPreferences;
 
     }
@@ -57,6 +66,11 @@ public class StepCounterComponent extends MainActivity implements SensorEventLis
 
         //Average burned calories for 73kg people from steps.
         tv_burnedCalories.setText(String.valueOf(Math.round(freshSteps*0.044)));
+
+        //Distance from steps for 174 cm person.
+        tv_distance.setText(String.format(Locale.ENGLISH,"%.2f",freshSteps/1400));
+
+        pb_caloriesGoal.incrementProgressBy(Math.round(freshSteps/100));
 
         saveTotalSteps(freshSteps);
         Log.d("STEPCOUNTERDEBUG","Steps go up!");
