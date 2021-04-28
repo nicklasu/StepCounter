@@ -14,11 +14,11 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import java.time.LocalDate;
-
 
 public class MainActivity extends AppCompatActivity {
+
     public static final String STEP_COUNT_PREFERENCES = "StepCountPreferences";
 
     private float totalSteps;
@@ -34,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
     //TextViews
     private TextView textView_stepsTaken;
     private TextView textView_caloriesBurned;
+    private TextView textView_distance;
 
+    //Progress bar
+    private ProgressBar progressBar_caloriesGoal;
     //Button for switching to settings
     Button switchToSettings;
 
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
         //FindView
         textView_stepsTaken = findViewById(R.id.stepsTaken);
         textView_caloriesBurned = findViewById(R.id.caloriesBurned);
+        textView_distance = findViewById(R.id.distanceView);
+
+        progressBar_caloriesGoal = findViewById(R.id.caloriesGoal);
 
         //Load data
         stepCountPreferences = getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         //Class initializations
-        stepCounter = new StepCounterComponent(sensorManager, stepSensor, textView_stepsTaken, textView_caloriesBurned, stepCountPreferences);
+        stepCounter = new StepCounterComponent(sensorManager, stepSensor, textView_stepsTaken, textView_caloriesBurned, textView_distance, progressBar_caloriesGoal, stepCountPreferences);
 
         //Button for switching to treats
         switchToSettings = findViewById(R.id.switchToTreatActivity);

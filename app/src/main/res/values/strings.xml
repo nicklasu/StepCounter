@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">StepCounter</string>
+    <string name="steps">Steps</string>
+    <string name="calories">Calories</string>
+    <string name="distance">Distance</string>
+    <string name="progress">Progress</string>
+    <string name="treatsButton">Treats</string>
+    <string name="treatName">Treat</string>
+
 </resources>
