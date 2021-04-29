@@ -2,6 +2,9 @@ package com.example.stepcounter;
 
 import java.util.ArrayList;
 
+/**
+ * Singleton for adding treats on ArrayList.
+ */
 public class TreatSingleton {
 
     private ArrayList<Treat> treats;
