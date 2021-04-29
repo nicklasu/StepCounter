@@ -3,6 +3,9 @@ package com.example.stepcounter;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+/**
+ * Class for saving steps, child of StepCounterComponent.
+ */
 public class SaveSteps extends StepCounterComponent{
 
     private SharedPreferences stepCountPreferences;

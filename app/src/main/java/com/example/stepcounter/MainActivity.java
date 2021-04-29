@@ -17,6 +17,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+/**
+ * Main program view, which also initializes sensors and preferences.
+ */
 public class MainActivity extends AppCompatActivity {
 
     public static final String STEP_COUNT_PREFERENCES = "StepCountPreferences";

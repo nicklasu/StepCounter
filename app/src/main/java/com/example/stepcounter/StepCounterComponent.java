@@ -10,6 +10,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import java.util.Locale;
 
+/**
+ *Class which calculates steps using the sensor. Child of MainActivity. Updates steps when sensor detects movement.
+ */
 public class StepCounterComponent extends MainActivity implements SensorEventListener {
 
     private SensorManager sensorManager;
