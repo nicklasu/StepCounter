@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Probably temp button
     Button switchToSettings;
+    Button switchToCalendar;
 
 
     //Required for backwards compatibility to API 26
@@ -73,10 +74,19 @@ public class MainActivity extends AppCompatActivity {
         //Button for switching to treats
         switchToSettings = findViewById(R.id.switchToTreatActivity);
         switchToSettings.setOnClickListener(view -> switchSettingsActivity());
+
+        //Button for switching to calendar
+        switchToCalendar = findViewById(R.id.b_Calendar);
+        switchToCalendar.setOnClickListener(view -> switchCalendarActivity());
     }
     private void switchSettingsActivity() {
         Intent switchToSettings = new Intent(this, SettingsActivity.class);
         startActivity(switchToSettings);
+    }
+
+    private void switchCalendarActivity(){
+        Intent switchToCalendar = new Intent(this, CalendarActivity.class);
+        startActivity(switchToCalendar);
     }
 
     @Override

@@ -3,7 +3,59 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 
-public class StorageComponent extends MainActivity{
+public class
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+StorageComponent extends MainActivity{
     private float savedTotalSteps;
     SharedPreferences stepCountPreferences;
 
