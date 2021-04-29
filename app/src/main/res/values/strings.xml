@@ -6,5 +6,6 @@
     <string name="progress">Progress</string>
     <string name="treatsButton">Treats</string>
     <string name="treatName">Treat</string>
-
+    <string name="treatStepCounter">Treat stepCounter</string>
+    <string name="notificationMessage">Treat Step Counter is running!</string>
 </resources>

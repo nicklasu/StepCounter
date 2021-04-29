@@ -1,19 +1,25 @@
 package com.example.stepcounter;
 
+import android.app.Service;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+
 import java.util.Locale;
 
 /**
- *Class which calculates steps using the sensor. Child of MainActivity. Updates steps when sensor detects movement.
+ *Class which calculates steps using the sensor. Service. Updates steps when sensor detects movement.
  */
-public class StepCounterComponent extends MainActivity implements SensorEventListener {
+public class StepCounterComponent implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor stepSensor;
@@ -48,6 +54,7 @@ public class StepCounterComponent extends MainActivity implements SensorEventLis
 
     public StepCounterComponent() {
     }
+
 
     public void countSteps() {
         if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
