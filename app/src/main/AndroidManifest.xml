@@ -14,8 +14,10 @@
         android:theme="@style/Theme.StepCounter">
         <service android:name=".foregroundStepCount" />
         <receiver android:name=".saveStepsReceiver" />
-        <receiver android:name=".saveDailyReceiver" />
         <activity android:name=".SettingsActivity" />
+        <activity android:name=".HistoryActivity"></activity>
+        <activity android:name=".HistoryActivityDetails"></activity>
+        <activity android:name=".CalendarActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
