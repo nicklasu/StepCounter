@@ -1,6 +1,10 @@
 package com.example.stepcounter;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
@@ -8,6 +12,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,10 +24,12 @@ import java.util.Locale;
 /**
  *Class which calculates steps using the sensor. Service. Updates steps when sensor detects movement.
  */
-public class StepCounterComponent implements SensorEventListener {
+public class StepCounterComponent extends saveStepsReceiver implements SensorEventListener {
 
     private SensorManager sensorManager;
     private Sensor stepSensor;
+
+    private AlarmManager alarmMgr;
 
     private float freshSteps;
     //For testing set to 410 calories. Will be user-defined
@@ -35,6 +42,7 @@ public class StepCounterComponent implements SensorEventListener {
     private SaveSteps saveSteps;
 
     private ProgressBar pb_caloriesGoal;
+
 
     SharedPreferences stepCountPreferences;
 
@@ -50,11 +58,11 @@ public class StepCounterComponent implements SensorEventListener {
         this.pb_caloriesGoal = pb_caloriesGoal;
         this.stepCountPreferences = sharedPreferences;
         saveSteps = new SaveSteps(stepCountPreferences);
+
     }
 
     public StepCounterComponent() {
     }
-
 
     public void countSteps() {
         if (sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER) != null) {
@@ -81,10 +89,13 @@ public class StepCounterComponent implements SensorEventListener {
         //Distance from steps for 174 cm person.
         tv_distance.setText(String.format(Locale.ENGLISH,"%.2f",freshSteps/1400));
 
-        saveSteps.saveTotalSteps(freshSteps);
 
         Log.d("STEPCOUNTERDEBUG","Steps go up!");
     }
+    public float giveFreshSteps(){
+        return freshSteps;
+    }
+
     //Necessary evil :)
     public void onAccuracyChanged(Sensor sensor, int accuracy) { }
 }

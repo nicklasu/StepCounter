@@ -3,12 +3,7 @@ package com.example.stepcounter;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +15,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 
 /**
  * Main program view, which also initializes sensors and preferences.
@@ -39,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private StepCounterComponent stepCounter;
 
     //TextViews
-    private TextView textView_stepsTaken;
-    private TextView textView_caloriesBurned;
-    private TextView textView_distance;
+    public TextView textView_stepsTaken;
+    public TextView textView_caloriesBurned;
+    public TextView textView_distance;
 
     //Progress bar
     private ProgressBar progressBar_caloriesGoal;
@@ -79,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         stepCountPreferences = getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
         totalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
 
+
         //Sensor initializations
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -90,7 +87,14 @@ public class MainActivity extends AppCompatActivity {
         //Button for switching to treats
         switchToSettings = findViewById(R.id.switchToTreatActivity);
         switchToSettings.setOnClickListener(view -> switchSettingsActivity());
+
+
+
         stepCounter.countSteps();
+        foregroundStepCount.givePref(this.getApplicationContext());
+        saveStepsReceiver.givePref(this.getApplicationContext());
+        saveDailyReceiver.givePref(this.getApplicationContext());
+
     }
 
 

@@ -10,17 +10,17 @@ public class SaveSteps extends StepCounterComponent{
 
     private SharedPreferences stepCountPreferences;
 
-
     public SaveSteps(SharedPreferences sharedPreferences){
         this.stepCountPreferences = sharedPreferences;
     }
 
-    public void saveTotalSteps(float freshSteps){
-        if(freshSteps > 0) {
+   /* public void saveTotalSteps(){
+        if(giveFreshSteps() > 0) {
             SharedPreferences.Editor editor = stepCountPreferences.edit();
-            editor.putFloat("dailyStepsKey", freshSteps);
+            editor.putFloat("dailyStepsKey", giveFreshSteps());
             editor.apply();
             Log.d("STEPCOUNTERDEBUG", "put float to dailyStepsKey");
+
         }
-    }
+    }*/
 }
