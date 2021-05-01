@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Load data
         stepCountPreferences = getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
-        totalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
 
 
         //Sensor initializations
@@ -149,11 +148,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveToList(){
-        float steps = stepCountPreferences.getFloat("dailyStepsKey", 0);
+        totalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
         String today = currentDate.getDate();
-        dayDataSingleton.getInstance().addValue(today, Math.round(steps), Math.round((steps/1400)*100.0)/100.0, Math.round(steps/23));
+        dayDataSingleton.getInstance().addValue(today, Math.round(totalSteps), Math.round((totalSteps/1400)*100.0)/100.0, Math.round(totalSteps/23));
         SharedPreferences.Editor editor = stepCountPreferences.edit();
-        editor.putFloat(today, steps);
+        editor.putFloat(today, totalSteps);
         editor.apply();
     }
 
