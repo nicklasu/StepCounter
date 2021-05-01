@@ -3,6 +3,7 @@ package com.example.stepcounter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
+        CurrentDate ff = new CurrentDate();
         // Reutrn to main activity
         switchToMain = findViewById(R.id.b_Return);
         switchToMain.setOnClickListener(view -> switchToMainActivity());
@@ -23,6 +25,9 @@ public class CalendarActivity extends AppCompatActivity {
         // Go to History activity
         switchToHistory = findViewById(R.id.b_Tohistory);
         switchToHistory.setOnClickListener(view -> switchToHistoryActivity());
+
+        TextView date = findViewById(R.id.tv_Weekday);
+        date.setText(ff.getDate());
     }
 
     private void switchToHistoryActivity(){
