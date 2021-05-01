@@ -1,26 +1,13 @@
 package com.example.stepcounter;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-
-import org.w3c.dom.Text;
-
 import java.util.Locale;
 
 /**
@@ -31,8 +18,7 @@ public class StepCounterComponent extends foregroundStepCount implements SensorE
     private SensorManager sensorManager;
     private Sensor stepSensor;
 
-    private AlarmManager alarmMgr;
-
+    private static float previousSteps;
     private float freshSteps;
     private float countSteps;
     //For testing set to 410 calories. Will be user-defined
@@ -44,7 +30,6 @@ public class StepCounterComponent extends foregroundStepCount implements SensorE
     private TextView tv_totalStepsPref;
 
 
-    private SaveSteps saveSteps;
 
     private ProgressBar pb_caloriesGoal;
 
@@ -63,12 +48,9 @@ public class StepCounterComponent extends foregroundStepCount implements SensorE
         this.tv_totalStepsPref = tv_totalStepsPref;
         this.pb_caloriesGoal = pb_caloriesGoal;
         this.stepCountPreferences = sharedPreferences;
-        saveSteps = new SaveSteps(stepCountPreferences);
         freshSteps = 0;
+        previousSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
         countSteps = 0;
-    }
-
-    public StepCounterComponent() {
     }
 
     public void countSteps() {
@@ -92,16 +74,16 @@ public class StepCounterComponent extends foregroundStepCount implements SensorE
         }
         //Set calories target and current calories as progress
         pb_caloriesGoal.setMax(caloriesGoal);
-        pb_caloriesGoal.setProgress((int)Math.round(freshSteps*0.044));
+        pb_caloriesGoal.setProgress((int)Math.round((freshSteps + previousSteps)*0.044));
 
         //Put steps to string
-        tv_stepsTaken.setText(String.valueOf(Math.round(freshSteps)));
+        tv_stepsTaken.setText(String.valueOf(Math.round(freshSteps + previousSteps)));
 
         //Average burned calories for 73kg people from steps.
-        tv_burnedCalories.setText(String.valueOf(Math.round(freshSteps*0.044)));
+        tv_burnedCalories.setText(String.valueOf(Math.round((freshSteps + previousSteps)*0.044)));
 
         //Distance from steps for 174 cm person.
-        tv_distance.setText(String.format(Locale.ENGLISH,"%.2f",freshSteps/1400));
+        tv_distance.setText(String.format(Locale.ENGLISH,"%.2f",(freshSteps + previousSteps)/1400));
 
         tv_totalStepsPref.setText(String.valueOf(stepCountPreferences.getFloat("dailyStepsKey", 0)));
 

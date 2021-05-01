@@ -24,17 +24,15 @@ import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 public class foregroundStepCount extends Service implements SensorEventListener {
 
     private float freshSteps;
-    private int dailyTotalSteps;
-    private int dailyCheck;
     private static SensorManager sensorManager;
     private static Sensor stepSensor;
     private float minusCounter;
     Intent dailyStepSaveIntent;
     PendingIntent dailySaveStepsPendingIntent;
 
-    Intent changeDayStepSaveIntent;
+   /* Intent changeDayStepSaveIntent;
     PendingIntent changeDaySaveStepsPendingIntent;
-
+*/
     AlarmManager stepSaveAlarm;
     private static SharedPreferences stepCounterPreferences;
     @Nullable
@@ -98,20 +96,11 @@ public class foregroundStepCount extends Service implements SensorEventListener 
             freshSteps = stepCount - minusCounter;
         }
 
-       // if(dailyCheck == 0){
-          //  dailyTotalSteps = 0;
-        //}
-        //Put steps to string
-
-
         saveBroadcast();
-        //getSteps(freshSteps);
 
         Log.d("STEPCOUNTERDEBUG","Steps go up!");
     }
-    public float getFreshSteps(){
-        return freshSteps;
-    }
+
 
     private void saveBroadcast(){
 
