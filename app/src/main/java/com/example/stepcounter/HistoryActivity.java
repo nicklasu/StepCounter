@@ -1,5 +1,6 @@
 package com.example.stepcounter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
 public class HistoryActivity extends AppCompatActivity {
     // return button
@@ -30,7 +33,6 @@ public class HistoryActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1,
                 dayDataSingleton.getInstance().getDayDatas()
         ));
-
 
         // return button, find it
         switchToCalendar = findViewById(R.id.b_returnToCalendar);

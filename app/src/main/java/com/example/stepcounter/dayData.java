@@ -1,5 +1,10 @@
 package com.example.stepcounter;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
+
 public class dayData {
     private String date;
     private int steps;
@@ -12,7 +17,6 @@ public class dayData {
         this.distance = distance; // in km 0.5 == 500m
         this.calories = calories;
     }
-
     public int getSteps() {
         return steps;
     }
