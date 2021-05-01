@@ -8,6 +8,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+/**
+ * Where the treats reside. Click a treat, and it becomes goal in MainActivity.
+ */
 public class SettingsActivity extends AppCompatActivity {
 
     Button switchMain;

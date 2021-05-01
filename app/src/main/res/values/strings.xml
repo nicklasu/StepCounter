@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">StepCounter</string>
+    <string name="steps">Steps</string>
+    <string name="calories">Calories</string>
+    <string name="distance">Distance</string>
+    <string name="progress">Progress</string>
+    <string name="treatsButton">Treats</string>
+    <string name="treatName">Treat</string>
+    <string name="SavedSteps">Saved Steps (Update 15 min interval)</string>
+    <string name="Reset">Reset</string>
+    <string name="treatStepCounter">Treat stepCounter</string>
+    <string name="notificationMessage">Treat Step Counter is running!</string>
 </resources>
