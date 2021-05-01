@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dayDataSingleton.getInstance().addValue("fffff",555, 44, 00);
 
         Intent stepCounterService = new Intent(this, foregroundStepCount.class);
         startForegroundService(stepCounterService);
