@@ -12,11 +12,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     //Button for switching to settings
     Button switchToSettings;
     Button resetTotalPref;
+    Button loadListView;
+    Button saveListView;
     Button switchToCalendar;
 
     CurrentDate currentDate;
@@ -90,7 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
         resetTotalPref = findViewById(R.id.resetTotalStepsPref);
         resetTotalPref.setOnClickListener(view -> resetPreferenceSteps());
-
+        loadListView = findViewById(R.id.loadToList);
+        loadListView.setOnClickListener(view -> loadToList());
+        saveListView = findViewById(R.id.saveToList);
+        saveListView.setOnClickListener(view -> saveToList());
 
 
         //Button for switching to treats
@@ -104,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
         stepCounter.countSteps();
         foregroundStepCount.givePref(this.getApplicationContext());
         saveStepsReceiver.givePref(this.getApplicationContext());
-        saveDailyReceiver.givePref(this.getApplicationContext());
 
     }
 
@@ -120,14 +126,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void resetPreferenceSteps(){
+        Map<String, ?> allEntries = stepCountPreferences.getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            if(!entry.getKey().equals("dailyStepsKey")) {
+                Log.d("STEPCOUNTERDEBUG", entry.getKey() + ": " + entry.getValue().toString());
+                SharedPreferences.Editor editor = stepCountPreferences.edit();
+                editor.remove(entry.getKey());
+                editor.apply();
+            }
+        }
+    }
 
+    private void loadToList(){
+        Map<String, ?> allEntries = stepCountPreferences.getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            if(!entry.getKey().equals("dailyStepsKey")) {
+                Log.d("STEPCOUNTERDEBUG", entry.getKey() + ": " + entry.getValue().toString());
+                float steps = Float.parseFloat(entry.getValue().toString());
+                dayDataSingleton.getInstance().addValue(entry.getKey(), Math.round(Float.parseFloat(entry.getValue().toString())), Math.round(steps/1400)*100.0/100.0, Math.round(steps/23));
+            }
+        }
+    }
+
+    private void saveToList(){
         float steps = stepCountPreferences.getFloat("dailyStepsKey", 0);
         String today = currentDate.getDate();
         dayDataSingleton.getInstance().addValue(today, Math.round(steps), Math.round((steps/1400)*100.0)/100.0, Math.round(steps/23));
         SharedPreferences.Editor editor = stepCountPreferences.edit();
-        editor.putFloat("dailyStepsKey", 10000.0f);
-        editor.commit();
-        textView_totalStepsPref.setText(String.valueOf(stepCountPreferences.getFloat("dailyStepsKey", 0)));
+        editor.putFloat(today, steps);
+        editor.apply();
     }
 
     @Override
