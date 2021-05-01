@@ -19,18 +19,16 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import java.util.Locale;
-
 import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
 public class foregroundStepCount extends Service implements SensorEventListener {
 
-    private int freshSteps;
+    private float freshSteps;
     private int dailyTotalSteps;
     private int dailyCheck;
     private static SensorManager sensorManager;
     private static Sensor stepSensor;
-
+    private float minusCounter;
     Intent dailyStepSaveIntent;
     PendingIntent dailySaveStepsPendingIntent;
 
@@ -50,7 +48,8 @@ public class foregroundStepCount extends Service implements SensorEventListener 
 
 
         countSteps();
-        dailyTotalSteps = (int) stepCounterPreferences.getFloat("dailyStepsKey", 0);
+        freshSteps = 0;
+        minusCounter = 0;
 
         NotificationChannel foreGroundService = new NotificationChannel("TREAT_01", "Treat foreground service", NotificationManager.IMPORTANCE_HIGH);
 
@@ -67,6 +66,7 @@ public class foregroundStepCount extends Service implements SensorEventListener 
 
         return START_NOT_STICKY;
     }
+
 
     public static void givePref(Context context){
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -88,8 +88,15 @@ public class foregroundStepCount extends Service implements SensorEventListener 
         //Take steps from sensors and put them to freshSteps
 
 
-        freshSteps = (int) event.values[0];
+        if(event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            float stepCount = event.values[0];
 
+            if (minusCounter == 0){
+                minusCounter = event.values[0];
+
+            }
+            freshSteps = stepCount - minusCounter;
+        }
 
        // if(dailyCheck == 0){
           //  dailyTotalSteps = 0;
@@ -102,16 +109,20 @@ public class foregroundStepCount extends Service implements SensorEventListener 
 
         Log.d("STEPCOUNTERDEBUG","Steps go up!");
     }
+    public float getFreshSteps(){
+        return freshSteps;
+    }
 
     private void saveBroadcast(){
+
         dailyStepSaveIntent = new Intent(this, saveStepsReceiver.class);
-        dailyStepSaveIntent.putExtra("StepsToSave", freshSteps);
+        dailyStepSaveIntent.putExtra("StepsToSave", Math.round(freshSteps));
         dailySaveStepsPendingIntent =
                 PendingIntent.getBroadcast(getApplicationContext(), 0, dailyStepSaveIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         stepSaveAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-        //stepSaveAlarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_FIFTEEN_MINUTES, dailySaveStepsPendingIntent);
-        stepSaveAlarm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, dailySaveStepsPendingIntent);
+        stepSaveAlarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_FIFTEEN_MINUTES, dailySaveStepsPendingIntent);
+        //stepSaveAlarm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, dailySaveStepsPendingIntent);
 
 /*
         changeDayStepSaveIntent = new Intent(this, saveDailyReceiver.class);

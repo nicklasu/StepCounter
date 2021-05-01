@@ -35,14 +35,15 @@ public class MainActivity extends AppCompatActivity {
     private StepCounterComponent stepCounter;
 
     //TextViews
-    public TextView textView_stepsTaken;
-    public TextView textView_caloriesBurned;
-    public TextView textView_distance;
-
+    private TextView textView_stepsTaken;
+    private TextView textView_caloriesBurned;
+    private TextView textView_distance;
+    private TextView textView_totalStepsPref;
     //Progress bar
     private ProgressBar progressBar_caloriesGoal;
     //Button for switching to settings
     Button switchToSettings;
+    Button resetTotalPref;
 
 
     //Required for backwards compatibility to API 26
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         textView_stepsTaken = findViewById(R.id.stepsTaken);
         textView_caloriesBurned = findViewById(R.id.caloriesBurned);
         textView_distance = findViewById(R.id.distanceView);
-
+        textView_totalStepsPref = findViewById(R.id.totalStepsFromPref);
         progressBar_caloriesGoal = findViewById(R.id.caloriesGoal);
 
         //Load data
@@ -81,7 +82,12 @@ public class MainActivity extends AppCompatActivity {
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         //Class initializations
-        stepCounter = new StepCounterComponent(sensorManager, stepSensor, textView_stepsTaken, textView_caloriesBurned, textView_distance, progressBar_caloriesGoal, stepCountPreferences);
+        stepCounter = new StepCounterComponent(sensorManager, stepSensor, textView_stepsTaken, textView_caloriesBurned, textView_distance, textView_totalStepsPref, progressBar_caloriesGoal, stepCountPreferences);
+
+
+        resetTotalPref = findViewById(R.id.resetTotalStepsPref);
+        resetTotalPref.setOnClickListener(view -> resetPreferenceSteps());
+
 
 
         //Button for switching to treats
@@ -101,6 +107,13 @@ public class MainActivity extends AppCompatActivity {
     private void switchSettingsActivity() {
         Intent switchToSettings = new Intent(this, SettingsActivity.class);
         startActivity(switchToSettings);
+    }
+
+    private void resetPreferenceSteps(){
+        SharedPreferences.Editor editor = stepCountPreferences.edit();
+        editor.putFloat("dailyStepsKey", 0.0f);
+        editor.commit();
+        textView_totalStepsPref.setText(String.valueOf(stepCountPreferences.getFloat("dailyStepsKey", 0)));
     }
 
     @Override

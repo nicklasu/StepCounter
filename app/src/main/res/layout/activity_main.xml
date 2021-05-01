@@ -140,5 +140,36 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/totalStepsFromPref"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="totalSteps"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/caloriesBurned" />
+
+    <TextView
+        android:id="@+id/staticTotalSteps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="totalSteps"
+        app:layout_constraintBottom_toTopOf="@+id/totalStepsFromPref"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/resetTotalStepsPref"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalStepsFromPref" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
