@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     //Button for switching to settings
     Button switchToSettings;
     Button resetTotalPref;
+    Button switchToCalendar;
 
 
     //Required for backwards compatibility to API 26
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         textView_totalStepsPref = findViewById(R.id.totalStepsFromPref);
         progressBar_caloriesGoal = findViewById(R.id.caloriesGoal);
 
+
         //Load data
         stepCountPreferences = getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
         totalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
@@ -94,13 +96,20 @@ public class MainActivity extends AppCompatActivity {
         switchToSettings = findViewById(R.id.switchToTreatActivity);
         switchToSettings.setOnClickListener(view -> switchSettingsActivity());
 
-
+        // Button for switching to Calendar
+        switchToCalendar = findViewById(R.id.b_Calendar);
+        switchToCalendar.setOnClickListener(view -> switchToCalendarActivity());
 
         stepCounter.countSteps();
         foregroundStepCount.givePref(this.getApplicationContext());
         saveStepsReceiver.givePref(this.getApplicationContext());
         saveDailyReceiver.givePref(this.getApplicationContext());
 
+    }
+
+    private void switchToCalendarActivity(){
+        Intent switchToCalendar = new Intent(this, CalendarActivity.class);
+        startActivity(switchToCalendar);
     }
 
 
