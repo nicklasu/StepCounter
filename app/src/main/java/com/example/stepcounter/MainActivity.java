@@ -3,7 +3,6 @@ package com.example.stepcounter;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -14,12 +13,18 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+
+/**
+ * Main program view, which also initializes sensors and preferences.
+ */
 public class MainActivity extends AppCompatActivity {
+
     public static final String STEP_COUNT_PREFERENCES = "StepCountPreferences";
 
-    private float savedTotalSteps;
+    private float totalSteps;
 
     SharedPreferences stepCountPreferences;
 
@@ -29,15 +34,16 @@ public class MainActivity extends AppCompatActivity {
 
     private StepCounterComponent stepCounter;
 
-
+    //TextViews
     private TextView textView_stepsTaken;
-
-    private StorageComponent storageSteps;
-
-
-    //Probably temp button
+    private TextView textView_caloriesBurned;
+    private TextView textView_distance;
+    private TextView textView_totalStepsPref;
+    //Progress bar
+    private ProgressBar progressBar_caloriesGoal;
+    //Button for switching to settings
     Button switchToSettings;
-    Button switchToCalendar;
+    Button resetTotalPref;
 
 
     //Required for backwards compatibility to API 26
@@ -47,60 +53,77 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        Intent stepCounterService = new Intent(this, foregroundStepCount.class);
+        startForegroundService(stepCounterService);
+
+
         //Check for permission for step counter
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED){
             //ask for permission
             requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, 0);
         }
 
+
         //FindView
         textView_stepsTaken = findViewById(R.id.stepsTaken);
+        textView_caloriesBurned = findViewById(R.id.caloriesBurned);
+        textView_distance = findViewById(R.id.distanceView);
+        textView_totalStepsPref = findViewById(R.id.totalStepsFromPref);
+        progressBar_caloriesGoal = findViewById(R.id.caloriesGoal);
 
         //Load data
         stepCountPreferences = getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
-        savedTotalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
+        totalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
+
 
         //Sensor initializations
         sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         //Class initializations
-        storageSteps = new StorageComponent(stepCountPreferences, savedTotalSteps);
-        stepCounter = new StepCounterComponent(sensorManager, stepSensor, storageSteps.loadTotalSteps(), textView_stepsTaken);
+        stepCounter = new StepCounterComponent(sensorManager, stepSensor, textView_stepsTaken, textView_caloriesBurned, textView_distance, textView_totalStepsPref, progressBar_caloriesGoal, stepCountPreferences);
 
-        //Fresh data for textView
-        textView_stepsTaken.setText(String.valueOf(Math.round(storageSteps.loadTotalSteps())));
+
+        resetTotalPref = findViewById(R.id.resetTotalStepsPref);
+        resetTotalPref.setOnClickListener(view -> resetPreferenceSteps());
+
+
 
         //Button for switching to treats
         switchToSettings = findViewById(R.id.switchToTreatActivity);
         switchToSettings.setOnClickListener(view -> switchSettingsActivity());
 
-        //Button for switching to calendar
-        switchToCalendar = findViewById(R.id.b_Calendar);
-        switchToCalendar.setOnClickListener(view -> switchCalendarActivity());
+
+
+        stepCounter.countSteps();
+        foregroundStepCount.givePref(this.getApplicationContext());
+        saveStepsReceiver.givePref(this.getApplicationContext());
+        saveDailyReceiver.givePref(this.getApplicationContext());
+
     }
+
+
     private void switchSettingsActivity() {
         Intent switchToSettings = new Intent(this, SettingsActivity.class);
         startActivity(switchToSettings);
     }
 
-    private void switchCalendarActivity(){
-        Intent switchToCalendar = new Intent(this, CalendarActivity.class);
-        startActivity(switchToCalendar);
+    private void resetPreferenceSteps(){
+        SharedPreferences.Editor editor = stepCountPreferences.edit();
+        editor.putFloat("dailyStepsKey", 0.0f);
+        editor.commit();
+        textView_totalStepsPref.setText(String.valueOf(stepCountPreferences.getFloat("dailyStepsKey", 0)));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        stepCounter.countSteps();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        storageSteps.saveTotalSteps(stepCounter.saveSteps());
-        stepCounter.countSteps();
     }
-
 
 }
