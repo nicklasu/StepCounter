@@ -19,7 +19,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        ListView lv_treatList = findViewById(R.id.treatListView);
+        ListView lv_treatList = findViewById(R.id.lv_HistoryList);
 
         lv_treatList.setAdapter(new ArrayAdapter<>(
                 this,
