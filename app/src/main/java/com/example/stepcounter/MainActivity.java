@@ -4,8 +4,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -29,14 +31,13 @@ public class MainActivity extends AppCompatActivity {
     public static final String STEP_COUNT_PREFERENCES = "StepCountPreferences";
 
     private float totalSteps;
-
+    private float savedSteps;
+    private int treatCalories = 420;
     SharedPreferences stepCountPreferences;
 
     //Get the SensorManager and attach it a name "sensorManager"
     private SensorManager sensorManager;
     private Sensor stepSensor;
-
-    private StepCounterComponent stepCounter;
 
     //TextViews
     private TextView textView_stepsTaken;
@@ -53,6 +54,30 @@ public class MainActivity extends AppCompatActivity {
     Button switchToCalendar;
 
     CurrentDate currentDate;
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("STEPCOUNTERDEBUG", "OnReceive! New steps from foreGroundStepCount!");
+            float freshSteps =  intent.getExtras().getInt("freshSteps", 4);
+            freshSteps += savedSteps;
+            progressBar_caloriesGoal.setMax(treatCalories);
+            progressBar_caloriesGoal.setProgress((int)Math.round((freshSteps)*0.044));
+
+            //Put steps to string
+            textView_stepsTaken.setText(String.valueOf(Math.round(freshSteps)));
+
+            //Average burned calories for 73kg people from steps.
+            textView_caloriesBurned.setText(String.valueOf(Math.round((freshSteps)*0.044)));
+
+            //Distance from steps for 174 cm person.
+            textView_distance.setText(String.format(Locale.ENGLISH,"%.2f",(freshSteps)/1400));
+
+            textView_totalStepsPref.setText(String.valueOf(stepCountPreferences.getFloat("dailyStepsKey", 0)));
+
+        }
+    };
+
     //Required for backwards compatibility to API 26
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
@@ -60,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("STEPCOUNTERDEBUG","onCreate()");
+
 
         currentDate = new CurrentDate();
 
@@ -83,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Load data
         stepCountPreferences = getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
+        savedSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
 
 
         //Sensor initializations
@@ -90,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         //Class initializations
-        stepCounter = new StepCounterComponent(sensorManager, stepSensor, textView_stepsTaken, textView_caloriesBurned, textView_distance, textView_totalStepsPref, progressBar_caloriesGoal, stepCountPreferences);
+        //stepCounter = new StepCounterComponent(sensorManager, stepSensor, textView_stepsTaken, textView_caloriesBurned, textView_distance, textView_totalStepsPref, progressBar_caloriesGoal, stepCountPreferences);
 
 
         resetTotalPref = findViewById(R.id.resetTotalStepsPref);
@@ -109,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         switchToCalendar = findViewById(R.id.b_Calendar);
         switchToCalendar.setOnClickListener(view -> switchToCalendarActivity());
 
-        stepCounter.countSteps();
+        //stepCounter.countSteps();
         foregroundStepCount.givePref(this.getApplicationContext());
         saveStepsReceiver.givePref(this.getApplicationContext());
         saveNightlyStepsReceiver.givePref(this.getApplicationContext());
@@ -163,12 +190,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d("STEPCOUNTERDEBUG","onResume()");
+        registerReceiver(receiver, new IntentFilter("stepCounter.freshSteps"));
+        progressBar_caloriesGoal.setMax(treatCalories);
+        progressBar_caloriesGoal.setProgress((int)Math.round((savedSteps)*0.044));
+
+        //Put steps to string
+        textView_stepsTaken.setText(String.valueOf(Math.round(savedSteps)));
+
+        //Average burned calories for 73kg people from steps.
+        textView_caloriesBurned.setText(String.valueOf(Math.round((savedSteps)*0.044)));
+
+        //Distance from steps for 174 cm person.
+        textView_distance.setText(String.format(Locale.ENGLISH,"%.2f",(savedSteps)/1400));
+
+        textView_totalStepsPref.setText(String.valueOf(stepCountPreferences.getFloat("dailyStepsKey", 0)));
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Log.d("STEPCOUNTERDEBUG", "onPause()");
+        unregisterReceiver(receiver);
     }
     @Override
     protected void onDestroy() {

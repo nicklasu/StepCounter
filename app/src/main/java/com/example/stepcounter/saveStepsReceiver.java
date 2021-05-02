@@ -16,12 +16,10 @@ public class saveStepsReceiver extends BroadcastReceiver {
 
         float previousSteps = stepCounterPreferences.getFloat("dailyStepsKey", 0);
 
-        Log.d("STEPCOUNTERDEBUG", "saved xdd");
+        Log.d("STEPCOUNTERDEBUG", "Saved to dailyStepsKey!");
         float saveSteps =  intent.getExtras().getInt("StepsToSave", 4);
 
         saveSteps += previousSteps;
-
-        Log.d("STEPCOUNTERDEBUG", "put float to dailyStepsKey");
 
         SharedPreferences.Editor editor = stepCounterPreferences.edit();
         editor.putFloat("dailyStepsKey", saveSteps);

@@ -33,6 +33,7 @@ public class foregroundStepCount extends Service implements SensorEventListener 
     Intent nightlyStepSaveIntent;
     PendingIntent dailySaveStepsPendingIntent;
     PendingIntent nightlySaveStepsPendingIntent;
+    Intent freshStepsIntent;
    /* Intent changeDayStepSaveIntent;
     PendingIntent changeDaySaveStepsPendingIntent;
 */
@@ -64,7 +65,6 @@ public class foregroundStepCount extends Service implements SensorEventListener 
                         .setContentIntent(nightlySaveStepsPendingIntent)
                         .setContentIntent(dailySaveStepsPendingIntent)
                         .build();
-
         startForeground(1, stepCounterNotification);
 
         return START_NOT_STICKY;
@@ -88,24 +88,36 @@ public class foregroundStepCount extends Service implements SensorEventListener 
     }
 
     public void onSensorChanged(SensorEvent event) {
+
+
         //Take steps from sensors and put them to freshSteps
 
 
         if(event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            saveBroadcast();
+            saveNightlyBroadcast();
+
             float stepCount = event.values[0];
 
             if (minusCounter == 0){
                 minusCounter = event.values[0];
 
             }
+
             freshSteps = stepCount - minusCounter;
+            freshStepsBroadcast();
         }
 
-        saveBroadcast();
-        saveNightlyBroadcast();
+
         Log.d("STEPCOUNTERDEBUG","Steps go up!");
     }
 
+    private void freshStepsBroadcast(){
+        freshStepsIntent = new Intent();
+        freshStepsIntent.putExtra("freshSteps", Math.round(freshSteps));
+        freshStepsIntent.setAction("stepCounter.freshSteps");
+        sendBroadcast(freshStepsIntent);
+    }
 
     private void saveBroadcast(){
 
