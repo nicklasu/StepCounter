@@ -42,4 +42,9 @@ public class dayDataSingleton {
     public ArrayList<dayData> getDayDatas(){
         return dayDatas;
     }
+
+    public void clearDayDatas(){
+        this.dayDatas = null;
+        dayDatas = new ArrayList<>();
+    }
 }
