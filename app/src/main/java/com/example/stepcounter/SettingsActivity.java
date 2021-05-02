@@ -32,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
         switchMain.setOnClickListener(view -> switchToMainActivity());
     }
     private void switchToMainActivity() {
-        Intent switchToMain = new Intent(this, MainActivity.class);
-        startActivity(switchToMain);
+        super.onBackPressed();
+        finish();
     }
 }
