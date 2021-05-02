@@ -22,14 +22,12 @@ public class saveNightlyStepsReceiver extends BroadcastReceiver {
 
         float previousSteps = stepCounterPreferences.getFloat("dailyStepsKey", 0);
 
-        float saveSteps =  intent.getExtras().getInt("StepsToSave", 4);
 
-        saveSteps += previousSteps;
-        dayDataSingleton.getInstance().addValue(today, Math.round(saveSteps), Math.round((saveSteps/1400)*100.0)/100.0, Math.round(saveSteps/23));
+        dayDataSingleton.getInstance().addValue(today, Math.round(previousSteps), Math.round((previousSteps/1400)*100.0)/100.0, Math.round(previousSteps/23));
 
 
         SharedPreferences.Editor editor = stepCounterPreferences.edit();
-        editor.putFloat(today, saveSteps);
+        editor.putFloat(today, previousSteps);
         editor.putFloat("dailyStepsKey", 0f);
         editor.apply();
 

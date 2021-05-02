@@ -49,7 +49,7 @@ public class foregroundStepCount extends Service implements SensorEventListener 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
 
-
+        saveNightlyBroadcast();
         countSteps();
         freshSteps = 0;
         minusCounter = 0;
@@ -94,8 +94,6 @@ public class foregroundStepCount extends Service implements SensorEventListener 
 
 
         if(event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            saveBroadcast();
-            saveNightlyBroadcast();
 
             float stepCount = event.values[0];
 
@@ -106,6 +104,8 @@ public class foregroundStepCount extends Service implements SensorEventListener 
 
             freshSteps = stepCount - minusCounter;
             freshStepsBroadcast();
+            saveBroadcast();
+
         }
 
 
@@ -121,14 +121,13 @@ public class foregroundStepCount extends Service implements SensorEventListener 
 
     private void saveBroadcast(){
 
-        dailyStepSaveIntent = new Intent(this, saveStepsReceiver.class);
-        dailyStepSaveIntent.putExtra("StepsToSave", Math.round(freshSteps));
-        dailySaveStepsPendingIntent =
-                PendingIntent.getBroadcast(getApplicationContext(), 0, dailyStepSaveIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            dailyStepSaveIntent = new Intent(this, saveStepsReceiver.class);
+            dailyStepSaveIntent.putExtra("StepsToSave", Math.round(freshSteps));
+            dailySaveStepsPendingIntent =
+                    PendingIntent.getBroadcast(getApplicationContext(), 0, dailyStepSaveIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        stepSaveAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-        stepSaveAlarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, 10000, dailySaveStepsPendingIntent);
-
+            stepSaveAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+            stepSaveAlarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_FIFTEEN_MINUTES, dailySaveStepsPendingIntent);
 
 
     }
@@ -136,13 +135,12 @@ public class foregroundStepCount extends Service implements SensorEventListener 
         Calendar nightlySaveStepCalendar = Calendar.getInstance();
         nightlySaveStepCalendar.setTimeInMillis(System.currentTimeMillis());
         nightlySaveStepCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        nightlySaveStepCalendar.set(Calendar.MINUTE, 0);
+        nightlySaveStepCalendar.set(Calendar.MINUTE, 50);
         nightlySaveStepCalendar.set(Calendar.SECOND, 0);
         nightlySaveAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         //This also creates a new value in singleton list.
         nightlyStepSaveIntent = new Intent(this, saveNightlyStepsReceiver.class);
-        nightlyStepSaveIntent.putExtra("StepsToSaveNightly", Math.round(freshSteps));
         nightlySaveStepsPendingIntent =
                 PendingIntent.getBroadcast(getApplicationContext(), 1, nightlyStepSaveIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
