@@ -48,7 +48,6 @@ public class StepCounterComponent extends foregroundStepCount implements SensorE
         this.tv_totalStepsPref = tv_totalStepsPref;
         this.pb_caloriesGoal = pb_caloriesGoal;
         this.stepCountPreferences = sharedPreferences;
-        freshSteps = 0;
         previousSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
         countSteps = 0;
     }
@@ -70,7 +69,7 @@ public class StepCounterComponent extends foregroundStepCount implements SensorE
                 countSteps = event.values[0];
 
             }
-            freshSteps = stepCount - countSteps;
+            freshSteps = stepCount - countSteps + previousSteps;
         }
         //Set calories target and current calories as progress
         pb_caloriesGoal.setMax(caloriesGoal);

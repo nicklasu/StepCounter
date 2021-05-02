@@ -115,7 +115,7 @@ public class foregroundStepCount extends Service implements SensorEventListener 
                 PendingIntent.getBroadcast(getApplicationContext(), 0, dailyStepSaveIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         stepSaveAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-        stepSaveAlarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_FIFTEEN_MINUTES, dailySaveStepsPendingIntent);
+        stepSaveAlarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, 10000, dailySaveStepsPendingIntent);
 
 
 
