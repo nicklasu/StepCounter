@@ -190,18 +190,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d("STEPCOUNTERDEBUG","onResume()");
+        float savedStepsOnResume = stepCountPreferences.getFloat("dailyStepsKey", 0);
+
         registerReceiver(receiver, new IntentFilter("stepCounter.freshSteps"));
         progressBar_caloriesGoal.setMax(treatCalories);
-        progressBar_caloriesGoal.setProgress((int)Math.round((savedSteps)*0.044));
+        progressBar_caloriesGoal.setProgress((int)Math.round((savedStepsOnResume)*0.044));
 
         //Put steps to string
-        textView_stepsTaken.setText(String.valueOf(Math.round(savedSteps)));
+        textView_stepsTaken.setText(String.valueOf(Math.round(savedStepsOnResume)));
 
         //Average burned calories for 73kg people from steps.
-        textView_caloriesBurned.setText(String.valueOf(Math.round((savedSteps)*0.044)));
+        textView_caloriesBurned.setText(String.valueOf(Math.round((savedStepsOnResume)*0.044)));
 
         //Distance from steps for 174 cm person.
-        textView_distance.setText(String.format(Locale.ENGLISH,"%.2f",(savedSteps)/1400));
+        textView_distance.setText(String.format(Locale.ENGLISH,"%.2f",(savedStepsOnResume)/1400));
 
         textView_totalStepsPref.setText(String.valueOf(stepCountPreferences.getFloat("dailyStepsKey", 0)));
 
