@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         stepCounter.countSteps();
         foregroundStepCount.givePref(this.getApplicationContext());
         saveStepsReceiver.givePref(this.getApplicationContext());
+        saveNightlyStepsReceiver.givePref(this.getApplicationContext());
 
     }
 

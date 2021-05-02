@@ -19,6 +19,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.Calendar;
+
 import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
 public class foregroundStepCount extends Service implements SensorEventListener {
@@ -28,12 +30,14 @@ public class foregroundStepCount extends Service implements SensorEventListener 
     private static Sensor stepSensor;
     private float minusCounter;
     Intent dailyStepSaveIntent;
+    Intent nightlyStepSaveIntent;
     PendingIntent dailySaveStepsPendingIntent;
-
+    PendingIntent nightlySaveStepsPendingIntent;
    /* Intent changeDayStepSaveIntent;
     PendingIntent changeDaySaveStepsPendingIntent;
 */
     AlarmManager stepSaveAlarm;
+    AlarmManager nightlySaveAlarm;
     private static SharedPreferences stepCounterPreferences;
     @Nullable
     @Override
@@ -57,6 +61,7 @@ public class foregroundStepCount extends Service implements SensorEventListener 
                 new Notification.Builder(this, "TREAT_01")
                         .setContentTitle(getText(R.string.treatStepCounter))
                         .setContentText(getText(R.string.notificationMessage))
+                        .setContentIntent(nightlySaveStepsPendingIntent)
                         .setContentIntent(dailySaveStepsPendingIntent)
                         .build();
 
@@ -97,7 +102,7 @@ public class foregroundStepCount extends Service implements SensorEventListener 
         }
 
         saveBroadcast();
-
+        saveNightlyBroadcast();
         Log.d("STEPCOUNTERDEBUG","Steps go up!");
     }
 
@@ -111,15 +116,27 @@ public class foregroundStepCount extends Service implements SensorEventListener 
 
         stepSaveAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
         stepSaveAlarm.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES, AlarmManager.INTERVAL_FIFTEEN_MINUTES, dailySaveStepsPendingIntent);
-        //stepSaveAlarm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 10000, dailySaveStepsPendingIntent);
 
-/*
-        changeDayStepSaveIntent = new Intent(this, saveDailyReceiver.class);
-        changeDayStepSaveIntent.putExtra("StepsToSave", dailyTotalSteps);
-        changeDaySaveStepsPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, changeDayStepSaveIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        //stepSaveAlarm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, changeDaySaveStepsPendingIntent);
-*/
-        //stepSaveAlarm.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_DAY, AlarmManager.INTERVAL_DAY, dailySaveStepsPendingIntent);
+
+
+    }
+    private void saveNightlyBroadcast(){
+        Calendar nightlySaveStepCalendar = Calendar.getInstance();
+        nightlySaveStepCalendar.setTimeInMillis(System.currentTimeMillis());
+        nightlySaveStepCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        nightlySaveStepCalendar.set(Calendar.MINUTE, 0);
+        nightlySaveStepCalendar.set(Calendar.SECOND, 0);
+        nightlySaveAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        //This also creates a new value in singleton list.
+        nightlyStepSaveIntent = new Intent(this, saveNightlyStepsReceiver.class);
+        nightlyStepSaveIntent.putExtra("StepsToSaveNightly", Math.round(freshSteps));
+        nightlySaveStepsPendingIntent =
+                PendingIntent.getBroadcast(getApplicationContext(), 1, nightlyStepSaveIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        nightlySaveAlarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, nightlySaveStepCalendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, nightlySaveStepsPendingIntent);
+        //nightlySaveAlarm.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000, nightlySaveStepsPendingIntent);
     }
 
     //Necessary evil :)
