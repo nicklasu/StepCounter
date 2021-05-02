@@ -134,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
                 editor.apply();
             }
         }
+        dayDataSingleton.getInstance().clearDayDatas();
+
     }
 
     private void loadToList(){
