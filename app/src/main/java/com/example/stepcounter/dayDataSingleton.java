@@ -37,9 +37,7 @@ public class dayDataSingleton {
         dayDatas.add(new dayData("7.1.2021", 9523, 7.26, 200));
     }
 
-    public void addValue(String date, int steps, double distance, int calories){
-        dayDatas.add(new dayData(date, steps, distance, calories));
-    }
+
 
     public ArrayList<dayData> getDayDatas(){
         return dayDatas;
