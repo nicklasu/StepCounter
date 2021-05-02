@@ -2,8 +2,10 @@ package com.example.stepcounter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
@@ -16,7 +18,9 @@ public class dayDataSingleton {
         return dayDataInstance;
     }
 
+
     public void addValue(String date, int steps, double distance, int calories){
+
         dayDatas.add(new dayData(date, steps, distance, calories));
     }
 
