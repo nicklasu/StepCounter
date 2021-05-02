@@ -33,7 +33,7 @@ public class HistoryActivityDetails extends AppCompatActivity {
     }
 
     private void switchToHistoryActivity(){
-        Intent switchToHistory = new Intent(this, HistoryActivity.class);
-        startActivity(switchToHistory);
+        super.onBackPressed();
+        finish();
     }
 }

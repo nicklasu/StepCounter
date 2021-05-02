@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("STEPCOUNTERDEBUG","onCreate()");
+
         currentDate = new CurrentDate();
 
         Intent stepCounterService = new Intent(this, foregroundStepCount.class);
@@ -110,18 +112,17 @@ public class MainActivity extends AppCompatActivity {
         stepCounter.countSteps();
         foregroundStepCount.givePref(this.getApplicationContext());
         saveStepsReceiver.givePref(this.getApplicationContext());
+        saveNightlyStepsReceiver.givePref(this.getApplicationContext());
 
     }
 
     private void switchToCalendarActivity(){
-        Intent switchToCalendar = new Intent(this, CalendarActivity.class);
-        startActivity(switchToCalendar);
+        startActivity(new Intent(MainActivity.this, CalendarActivity.class));
     }
 
 
     private void switchSettingsActivity() {
-        Intent switchToSettings = new Intent(this, SettingsActivity.class);
-        startActivity(switchToSettings);
+        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
     }
 
     private void resetPreferenceSteps(){
@@ -161,11 +162,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("STEPCOUNTERDEBUG","onResume()");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("STEPCOUNTERDEBUG", "onPause()");
     }
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("STEPCOUNTERDEBUG", "onDestroy()");
+    }
 }

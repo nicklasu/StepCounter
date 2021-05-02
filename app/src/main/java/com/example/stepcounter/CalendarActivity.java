@@ -36,7 +36,7 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private void switchToMainActivity(){
-        Intent switchToMain = new Intent(this, MainActivity.class);
-        startActivity(switchToMain);
+        super.onBackPressed();
+        finish();
     }
 }

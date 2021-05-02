@@ -60,8 +60,8 @@ public class HistoryActivity extends AppCompatActivity {
 
     // return method
     private void switchToCalendarActivity(){
-        Intent switchToCalendar = new Intent(this, CalendarActivity.class);
-        startActivity(switchToCalendar);
+        super.onBackPressed();
+        finish();
     }
 
 }
