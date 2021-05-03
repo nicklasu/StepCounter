@@ -3,7 +3,7 @@
     package="com.example.stepcounter">
     <!-- Added permission for step counter -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -12,16 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StepCounter">
+
         <service android:name=".foregroundStepCount" />
+
         <receiver android:name=".saveStepsReceiver" />
         <receiver android:name=".saveNightlyStepsReceiver" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".HistoryActivity"></activity>
-        <activity android:name=".HistoryActivityDetails"></activity>
-        <activity android:name=".MainActivity">
 
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".HistoryActivity" />
+        <activity android:name=".HistoryActivityDetails" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

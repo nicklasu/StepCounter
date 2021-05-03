@@ -98,7 +98,6 @@
         style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="157dp"
         android:layout_height="22dp"
-        android:progress="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

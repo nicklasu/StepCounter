@@ -33,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
 
     private float totalSteps;
     private float savedSteps;
-    private int treatCalories = 420;
+
+    private String treatName;
+    private int treatCalories;
+
     SharedPreferences stepCountPreferences;
 
     //Get the SensorManager and attach it a name "sensorManager"
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView_caloriesBurned;
     private TextView textView_distance;
     private TextView textView_totalStepsPref;
+    private TextView textView_treatName;
     //Progress bar
     private ProgressBar progressBar_caloriesGoal;
     //Button for switching to settings
@@ -60,9 +64,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("STEPCOUNTERDEBUG", "OnReceive! New steps from foreGroundStepCount!");
-            float freshSteps =  intent.getExtras().getInt("freshSteps", 4);
+            float freshSteps =  intent.getExtras().getInt("freshSteps", 0);
             freshSteps += savedSteps;
-            progressBar_caloriesGoal.setMax(treatCalories);
+
+            Log.d("STEPCOUNTERDEBUG", String.valueOf(treatCalories));
+
             progressBar_caloriesGoal.setProgress((int)Math.round((freshSteps)*0.044));
 
             //Put steps to string
@@ -105,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         textView_caloriesBurned = findViewById(R.id.caloriesBurned);
         textView_distance = findViewById(R.id.distanceView);
         textView_totalStepsPref = findViewById(R.id.totalStepsFromPref);
+        textView_treatName = findViewById(R.id.treatName);
         progressBar_caloriesGoal = findViewById(R.id.caloriesGoal);
 
 
@@ -141,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         foregroundStepCount.givePref(this.getApplicationContext());
         saveStepsReceiver.givePref(this.getApplicationContext());
         saveNightlyStepsReceiver.givePref(this.getApplicationContext());
+        SettingsActivity.givePref(this.getApplicationContext());
 
     }
 
@@ -211,18 +219,23 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.d("STEPCOUNTERDEBUG","onResume()");
         float savedStepsOnResume = stepCountPreferences.getFloat("dailyStepsKey", 0);
+        treatCalories = stepCountPreferences.getInt("treatCaloriesKey", 0);
+        treatName = stepCountPreferences.getString("treatNameKey", "");
+        Log.d("STEPCOUNTERDEBUG", String.valueOf(treatCalories));
 
         registerReceiver(receiver, new IntentFilter("stepCounter.freshSteps"));
         progressBar_caloriesGoal.setMax(treatCalories);
         progressBar_caloriesGoal.setProgress((int)Math.round((savedStepsOnResume)*0.044));
 
-        //Put steps to string
+        textView_treatName.setText(treatName);
+
+        //Put saved to string
         textView_stepsTaken.setText(String.valueOf(Math.round(savedStepsOnResume)));
 
-        //Average burned calories for 73kg people from steps.
+        //Average burned calories for 73kg people from saves.
         textView_caloriesBurned.setText(String.valueOf(Math.round((savedStepsOnResume)*0.044)));
 
-        //Distance from steps for 174 cm person.
+        //Distance from saved for 174 cm person.
         textView_distance.setText(String.format(Locale.ENGLISH,"%.2f",(savedStepsOnResume)/1400));
 
         textView_totalStepsPref.setText(String.valueOf(stepCountPreferences.getFloat("dailyStepsKey", 0)));
