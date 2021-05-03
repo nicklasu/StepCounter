@@ -172,10 +172,10 @@
         app:layout_constraintTop_toBottomOf="@+id/totalStepsFromPref" />
 
     <Button
-        android:id="@+id/b_Calendar"
+        android:id="@+id/b_History"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Calendar"
+        android:text="History"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

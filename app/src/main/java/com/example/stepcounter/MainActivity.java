@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     Button resetTotalPref;
     Button loadListView;
     Button saveListView;
-    Button switchToCalendar;
+    Button switchToHistory;
 
     CurrentDate currentDate;
 
@@ -133,8 +134,8 @@ public class MainActivity extends AppCompatActivity {
         switchToSettings.setOnClickListener(view -> switchSettingsActivity());
 
         // Button for switching to Calendar
-        switchToCalendar = findViewById(R.id.b_Calendar);
-        switchToCalendar.setOnClickListener(view -> switchToCalendarActivity());
+        switchToHistory = findViewById(R.id.b_History);
+        switchToHistory.setOnClickListener(view -> switchToHistoryActivity());
 
         //stepCounter.countSteps();
         foregroundStepCount.givePref(this.getApplicationContext());
@@ -143,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void switchToCalendarActivity(){
-        startActivity(new Intent(MainActivity.this, CalendarActivity.class));
+    private void switchToHistoryActivity(){
+        startActivity(new Intent(MainActivity.this, HistoryActivity.class));
     }
 
 
@@ -167,12 +168,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadToList(){
+        String today = currentDate.getDate();
+        ArrayList<String> allDates = dayDataSingleton.getInstance().getAllDates();
+        //TextView thing = findViewById(R.id.staticCalories);
+        //thing.setText(allDates.size());
+        for(int i = 0; i < dayDataSingleton.getInstance().getSize(); i++){
+            if (allDates.contains(dayDataSingleton.getInstance().getDayDatas().get(i).getDate())){
+                dayDataSingleton.getInstance().del(i);
+               // dayDataSingleton.getInstance().addValue("DUPLICATE " + dayDataSingleton.getInstance().getDayDatas().get(i).getDate(), 11, 2.22, 22);
+
+            }
+        }
+
         Map<String, ?> allEntries = stepCountPreferences.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             if(!entry.getKey().equals("dailyStepsKey")) {
                 Log.d("STEPCOUNTERDEBUG", entry.getKey() + ": " + entry.getValue().toString());
                 float steps = Float.parseFloat(entry.getValue().toString());
-                dayDataSingleton.getInstance().addValue(entry.getKey(), Math.round(Float.parseFloat(entry.getValue().toString())), Math.round(steps/1400)*100.0/100.0, Math.round(steps/23));
+
+                dayDataSingleton.getInstance().addValue(entry.getKey()+" from load", Math.round(Float.parseFloat(entry.getValue().toString())), Math.round(steps/1400)*100.0/100.0, Math.round(steps/23));
+
             }
         }
     }
@@ -180,6 +195,11 @@ public class MainActivity extends AppCompatActivity {
     private void saveToList(){
         totalSteps = stepCountPreferences.getFloat("dailyStepsKey", 0);
         String today = currentDate.getDate();
+        for(int i = 0; i <dayDataSingleton.getInstance().getSize(); i++){
+            if (dayDataSingleton.getInstance().getDayDatas().get(i).getDate().contains(today)){
+                dayDataSingleton.getInstance().del(i);
+            }
+        }
         dayDataSingleton.getInstance().addValue(today, Math.round(totalSteps), Math.round((totalSteps/1400)*100.0)/100.0, Math.round(totalSteps/23));
         SharedPreferences.Editor editor = stepCountPreferences.edit();
         editor.putFloat(today, totalSteps);
