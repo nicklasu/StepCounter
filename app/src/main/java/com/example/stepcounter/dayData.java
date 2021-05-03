@@ -1,9 +1,5 @@
 package com.example.stepcounter;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
 public class dayData {
     private String date;

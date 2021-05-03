@@ -2,16 +2,24 @@ package com.example.stepcounter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+
+import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
 /**
  * Where the treats reside. Click a treat, and it becomes goal in MainActivity.
  */
 public class SettingsActivity extends AppCompatActivity {
+
+    private static SharedPreferences stepCounterPreferences;
 
     Button switchMain;
     @Override
@@ -27,6 +35,20 @@ public class SettingsActivity extends AppCompatActivity {
                 TreatSingleton.getInstance().getTreats()
         ));
 
+
+        lv_treatList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String treatName = TreatSingleton.getInstance().getTreats().get(position).getTreatName();
+                int treatCalories = TreatSingleton.getInstance().getTreats().get(position).getTreatCalories();
+
+                SharedPreferences.Editor editor = stepCounterPreferences.edit();
+                editor.putString("treatNameKey", treatName);
+                editor.putInt("treatCaloriesKey", treatCalories);
+                editor.apply();
+
+            }
+        });
         //Back to MainActivity
         switchMain = findViewById(R.id.switchToMain);
         switchMain.setOnClickListener(view -> switchToMainActivity());
@@ -34,5 +56,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void switchToMainActivity() {
         super.onBackPressed();
         finish();
+    }
+    public static void givePref(Context context){
+        stepCounterPreferences = context.getSharedPreferences(STEP_COUNT_PREFERENCES, Context.MODE_PRIVATE);
     }
 }
