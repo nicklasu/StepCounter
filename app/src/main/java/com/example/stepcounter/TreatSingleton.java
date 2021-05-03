@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Singleton for adding treats on ArrayList.
+ * @author Nicklas Sundell
  */
 public class TreatSingleton {
 

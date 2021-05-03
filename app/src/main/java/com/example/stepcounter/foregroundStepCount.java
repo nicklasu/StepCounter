@@ -30,6 +30,7 @@ import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
  * It runs itself in the background as foreground service.
  * It can be seen as a notification when it is running.
  * It uses Sensor.TYPE_STEP_COUNTER for counting steps.
+ * @author Nicklas Sundell
  */
 public class foregroundStepCount extends Service implements SensorEventListener {
 
@@ -143,7 +144,7 @@ public class foregroundStepCount extends Service implements SensorEventListener 
         Calendar nightlySaveStepCalendar = Calendar.getInstance();
         nightlySaveStepCalendar.setTimeInMillis(System.currentTimeMillis());
         nightlySaveStepCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        nightlySaveStepCalendar.set(Calendar.MINUTE, 55);
+        nightlySaveStepCalendar.set(Calendar.MINUTE, 50);
         nightlySaveStepCalendar.set(Calendar.SECOND, 0);
         nightlySaveAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
 

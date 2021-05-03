@@ -2,8 +2,6 @@ package com.example.stepcounter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -12,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 /**
  * ListView, where one can see his previous days. Clicking an item launches HistoryActivityDetails, which shows steps, calories and distance.
+ * @author Tatu Talvikko
  */
 public class HistoryActivity extends AppCompatActivity {
     // return button

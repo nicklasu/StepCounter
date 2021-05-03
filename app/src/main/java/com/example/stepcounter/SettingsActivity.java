@@ -3,7 +3,6 @@ package com.example.stepcounter;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +15,7 @@ import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
 /**
  * Where the treats reside. Click a treat, and it becomes goal in MainActivity.
+ * @author Nicklas Sundell
  */
 public class SettingsActivity extends AppCompatActivity {
 
