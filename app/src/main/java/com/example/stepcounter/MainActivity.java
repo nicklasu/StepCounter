@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
 
         Map<String, ?> allEntries = stepCountPreferences.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            if(!entry.getKey().equals("dailyStepsKey")) {
+            if(!entry.getKey().equals("dailyStepsKey") && !entry.getKey().equals("treatNameKey") && !entry.getKey().equals("treatCaloriesKey")) {
                 Log.d("STEPCOUNTERDEBUG", entry.getKey() + ": " + entry.getValue().toString());
                 float steps = Float.parseFloat(entry.getValue().toString());
 
