@@ -22,7 +22,15 @@ import androidx.annotation.Nullable;
 import java.util.Calendar;
 
 import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
-
+/**
+ * Service for counting steps. Sends many broadcasts.
+ * Broadcast for saving every 15 minutes
+ * Broadcast saveNightlyBroadcast for clearing daily steps and saving them to current day every day at midnight
+ * Broadcast for sending steps to MainActivity so steps can be seen increasing in real-time.
+ * It runs itself in the background as foreground service.
+ * It can be seen as a notification when it is running.
+ * It uses Sensor.TYPE_STEP_COUNTER for counting steps.
+ */
 public class foregroundStepCount extends Service implements SensorEventListener {
 
     private float freshSteps;
@@ -135,7 +143,7 @@ public class foregroundStepCount extends Service implements SensorEventListener 
         Calendar nightlySaveStepCalendar = Calendar.getInstance();
         nightlySaveStepCalendar.setTimeInMillis(System.currentTimeMillis());
         nightlySaveStepCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        nightlySaveStepCalendar.set(Calendar.MINUTE, 50);
+        nightlySaveStepCalendar.set(Calendar.MINUTE, 55);
         nightlySaveStepCalendar.set(Calendar.SECOND, 0);
         nightlySaveAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
 

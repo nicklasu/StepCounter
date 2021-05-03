@@ -26,6 +26,7 @@ import java.util.Map;
 
 /**
  * Main program view, which also initializes sensors and preferences.
+ * Gets fresh steps data on every onReceive from foreGroundStepCount.
  */
 public class MainActivity extends AppCompatActivity {
 
