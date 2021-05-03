@@ -10,6 +10,7 @@ import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
 /**
  * Saves steps to dailyStepsKey every 15 minutes.
+ * @author Nicklas Sundell
  */
 public class saveStepsReceiver extends BroadcastReceiver {
 
@@ -21,10 +22,10 @@ public class saveStepsReceiver extends BroadcastReceiver {
 
         Log.d("STEPCOUNTERDEBUG", "Saved to dailyStepsKey!");
         float saveSteps =  intent.getExtras().getInt("StepsToSave", 0);
-        previousSteps += (float) saveSteps;
+        saveSteps += previousSteps;
 
         SharedPreferences.Editor editor = stepCounterPreferences.edit();
-        editor.putFloat("dailyStepsKey", previousSteps);
+        editor.putFloat("dailyStepsKey", saveSteps);
         editor.apply();
     }
 
