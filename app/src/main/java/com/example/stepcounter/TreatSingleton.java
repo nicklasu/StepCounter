@@ -22,9 +22,17 @@ public class TreatSingleton {
 
 
     }
+    public void addTreat(String treatName, int treatCalories){
+        treats.add(new Treat(treatName, treatCalories));
+    }
 
     public ArrayList<Treat> getTreats(){
         return treats;
+    }
+
+    public void clearTreatData(){
+        this.treats = null;
+        treats = new ArrayList<>();
     }
 
 }
