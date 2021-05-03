@@ -8,6 +8,9 @@ import android.util.Log;
 
 import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
+/**
+ * Saves steps to dailyStepsKey every 15 minutes.
+ */
 public class saveStepsReceiver extends BroadcastReceiver {
 
     private static SharedPreferences stepCounterPreferences;

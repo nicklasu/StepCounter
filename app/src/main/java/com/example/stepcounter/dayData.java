@@ -1,6 +1,9 @@
 package com.example.stepcounter;
 
-
+/**
+ * Date, steps, distance and calories to HistoryActivityDetails
+ * @return date, steps, distance and calories
+ */
 public class dayData {
     private String date;
     private int steps;

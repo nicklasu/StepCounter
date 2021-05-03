@@ -9,6 +9,9 @@ import java.util.Map;
 
 import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
+/**
+ * Singleton for HistoryActivity ListView
+ */
 public class dayDataSingleton {
 
     private ArrayList<dayData> dayDatas;
