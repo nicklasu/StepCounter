@@ -16,11 +16,14 @@ public class TreatSingleton {
     private TreatSingleton() {
         treats = new ArrayList<>();
 
-        treats.add(new Treat("Avokado"));
+        treats.add(new Treat("Avokado", 200));
+        treats.add(new Treat("Candy", 20));
+
 
     }
 
     public ArrayList<Treat> getTreats(){
         return treats;
     }
+
 }
