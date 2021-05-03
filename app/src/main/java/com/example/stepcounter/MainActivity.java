@@ -26,6 +26,8 @@ import java.util.Map;
 
 /**
  * Main program view, which also initializes sensors and preferences.
+ * Gets fresh steps data on every onReceive from foreGroundStepCount.
+ * @author Nicklas Sundell
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -190,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
         Map<String, ?> allEntries = stepCountPreferences.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            if(!entry.getKey().equals("dailyStepsKey")) {
+            if(!entry.getKey().equals("dailyStepsKey") && !entry.getKey().equals("treatNameKey") && !entry.getKey().equals("treatCaloriesKey")) {
                 Log.d("STEPCOUNTERDEBUG", entry.getKey() + ": " + entry.getValue().toString());
                 float steps = Float.parseFloat(entry.getValue().toString());
 

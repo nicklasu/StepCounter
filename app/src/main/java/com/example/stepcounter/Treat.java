@@ -2,6 +2,11 @@ package com.example.stepcounter;
 
 import androidx.annotation.NonNull;
 
+/**
+ * Used for getting name and calories of the treat from TreatSingleton
+ * @return treatName and treatCalories. For example Chocolate bar, 250 calories.
+ * @author Nicklas Sundell
+ */
 public class Treat {
 
     private String treatName;

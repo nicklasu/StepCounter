@@ -2,15 +2,16 @@ package com.example.stepcounter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+/**
+ * ListView, where one can see his previous days. Clicking an item launches HistoryActivityDetails, which shows steps, calories and distance.
+ * @author Tatu Talvikko
+ */
 public class HistoryActivity extends AppCompatActivity {
     // return button
     Button switchToCalendar;
@@ -35,23 +36,20 @@ public class HistoryActivity extends AppCompatActivity {
         switchToCalendar = findViewById(R.id.b_returnToMain);
         switchToCalendar.setOnClickListener(view -> switchToCalendarActivity());
 
-        lv_history.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(HistoryActivity.this, HistoryActivityDetails.class);
+        lv_history.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(HistoryActivity.this, HistoryActivityDetails.class);
 
-                String steps = ""+dayDataSingleton.getInstance().getDayDatas().get(position).getSteps();
-                String distance = ""+dayDataSingleton.getInstance().getDayDatas().get(position).getDistance();
-                String calories = ""+dayDataSingleton.getInstance().getDayDatas().get(position).getCalories();
-                String date = ""+dayDataSingleton.getInstance().getDayDatas().get(position).getDate();
+            String steps = ""+dayDataSingleton.getInstance().getDayDatas().get(position).getSteps();
+            String distance = ""+dayDataSingleton.getInstance().getDayDatas().get(position).getDistance();
+            String calories = ""+dayDataSingleton.getInstance().getDayDatas().get(position).getCalories();
+            String date = ""+dayDataSingleton.getInstance().getDayDatas().get(position).getDate();
 
-                intent.putExtra(STEPS, steps);
-                intent.putExtra(DIST, distance);
-                intent.putExtra(CALO, calories);
-                intent.putExtra(DATE, date);
+            intent.putExtra(STEPS, steps);
+            intent.putExtra(DIST, distance);
+            intent.putExtra(CALO, calories);
+            intent.putExtra(DATE, date);
 
-                startActivity(intent);
-            }
+            startActivity(intent);
         });
     }
 

@@ -8,6 +8,10 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Shows details from dayDataSingleton list. Used for checking the data (steps, calories, distance).
+ * @author Tatu Talvikko
+ */
 public class HistoryActivityDetails extends AppCompatActivity {
     Button switchToHistory;
     @Override

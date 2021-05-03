@@ -1,14 +1,12 @@
 package com.example.stepcounter;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Map;
 
-import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
+/**
+ * Singleton for HistoryActivity ListView
+ * @author Tatu Talvikko
+ */
 public class dayDataSingleton {
 
     private ArrayList<dayData> dayDatas;

@@ -1,7 +1,6 @@
 package com.example.stepcounter;
 
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +8,10 @@ import android.util.Log;
 
 import static com.example.stepcounter.MainActivity.STEP_COUNT_PREFERENCES;
 
+/**
+ * Gets called every day roughly at midnight to save steps to current day and clearing dailyStepsKey.
+ * @author Nicklas Sundell
+ */
 public class saveNightlyStepsReceiver extends BroadcastReceiver {
 
     CurrentDate currentDate;
@@ -23,7 +26,7 @@ public class saveNightlyStepsReceiver extends BroadcastReceiver {
         float previousSteps = stepCounterPreferences.getFloat("dailyStepsKey", 0);
 
 
-        dayDataSingleton.getInstance().addValue(today, Math.round(previousSteps), Math.round((previousSteps/1400)*100.0)/100.0, Math.round(previousSteps/23));
+        //dayDataSingleton.getInstance().addValue(today, Math.round(previousSteps), Math.round((previousSteps/1400)*100.0)/100.0, Math.round(previousSteps/23));
 
 
         SharedPreferences.Editor editor = stepCounterPreferences.edit();
